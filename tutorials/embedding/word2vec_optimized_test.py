@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 """Tests for word2vec_optimized module."""
 
 from __future__ import absolute_import
@@ -32,13 +31,12 @@ FLAGS = flags.FLAGS
 
 class Word2VecTest(tf.test.TestCase):
 
-  def setUp(self):
-    FLAGS.train_data = os.path.join(self.get_temp_dir() + "test-text.txt")
-    FLAGS.eval_data = os.path.join(self.get_temp_dir() + "eval-text.txt")
-    FLAGS.save_path = self.get_temp_dir()
-    with open(FLAGS.train_data, "w") as f:
-      f.write(
-          """alice was beginning to get very tired of sitting by her sister on
+    def setUp(self):
+        FLAGS.train_data = os.path.join(self.get_temp_dir() + "test-text.txt")
+        FLAGS.eval_data = os.path.join(self.get_temp_dir() + "eval-text.txt")
+        FLAGS.save_path = self.get_temp_dir()
+        with open(FLAGS.train_data, "w") as f:
+            f.write("""alice was beginning to get very tired of sitting by her sister on
           the bank, and of having nothing to do: once or twice she had peeped
           into the book her sister was reading, but it had no pictures or
           conversations in it, 'and what is the use of a book,' thought alice
@@ -47,16 +45,16 @@ class Word2VecTest(tf.test.TestCase):
           and stupid), whether the pleasure of making a daisy-chain would be
           worth the trouble of getting up and picking the daisies, when suddenly
           a White rabbit with pink eyes ran close by her.\n""")
-      with open(FLAGS.eval_data, "w") as f:
-        f.write("alice she rabbit once\n")
+            with open(FLAGS.eval_data, "w") as f:
+                f.write("alice she rabbit once\n")
 
-  def testWord2VecOptimized(self):
-    FLAGS.batch_size = 5
-    FLAGS.num_neg_samples = 10
-    FLAGS.epochs_to_train = 1
-    FLAGS.min_count = 0
-    word2vec_optimized.main([])
+    def testWord2VecOptimized(self):
+        FLAGS.batch_size = 5
+        FLAGS.num_neg_samples = 10
+        FLAGS.epochs_to_train = 1
+        FLAGS.min_count = 0
+        word2vec_optimized.main([])
 
 
 if __name__ == "__main__":
-  tf.test.main()
+    tf.test.main()

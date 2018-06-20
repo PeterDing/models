@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 """Import generated word2vec optimized ops into embedding package."""
 from __future__ import absolute_import
 from __future__ import division
