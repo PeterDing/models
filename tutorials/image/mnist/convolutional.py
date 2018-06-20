@@ -190,6 +190,9 @@ def main(_):
     # 2D convolution, with 'SAME' padding (i.e. the output feature map has
     # the same size as the input). Note that {strides} is a 4D array whose
     # shape matches the data layout: [image index, y, x, depth].
+    #
+    # [conv2d] Must have `strides[0] = strides[3] = 1`.  For the most common case of the same
+    # horizontal and vertices strides, `strides = [1, stride, stride, 1]`.
     conv = tf.nn.conv2d(data,
                         conv1_weights,
                         strides=[1, 1, 1, 1],
