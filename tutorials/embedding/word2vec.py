@@ -192,6 +192,9 @@ class Word2Vec(object):
 
     def forward(self, examples, labels):
         """Build the graph for the forward pass."""
+
+        # skipgram negative loss designation: [notes](notes/README.md)
+
         opts = self._options
 
         # Declare all variables we need.
@@ -215,6 +218,7 @@ class Word2Vec(object):
         labels_matrix = tf.reshape(tf.cast(labels, dtype=tf.int64), [opts.batch_size, 1])
 
         # Negative sampling.
+        # Sampling noise words from all words
         sampled_ids, _, _ = (tf.nn.fixed_unigram_candidate_sampler(
             true_classes=labels_matrix,
             num_true=1,
@@ -252,8 +256,11 @@ class Word2Vec(object):
 
         # cross-entropy(logits, labels)
         opts = self._options
+        # -log(sigmoid(true_logits))
         true_xent = tf.nn.sigmoid_cross_entropy_with_logits(
             labels=tf.ones_like(true_logits), logits=true_logits)
+
+        # -log(1 - sigmoid(sampled_logits))
         sampled_xent = tf.nn.sigmoid_cross_entropy_with_logits(
             labels=tf.zeros_like(sampled_logits), logits=sampled_logits)
 
