@@ -114,6 +114,7 @@ class PTBModel(object):
         self._rnn_params = None
         self._cell = None
         self.batch_size = input_.batch_size
+        # num_steps: sequence length
         self.num_steps = input_.num_steps
         size = config.hidden_size
         vocab_size = config.vocab_size
@@ -134,6 +135,7 @@ class PTBModel(object):
         logits = tf.reshape(logits, [self.batch_size, self.num_steps, vocab_size])
 
         # Use the contrib sequence loss and average over the batches
+        # like tf.nn.sparse_softmax_cross_entropy_with_logits
         loss = tf.contrib.seq2seq.sequence_loss(
             logits,
             input_.targets,
@@ -228,6 +230,7 @@ class PTBModel(object):
         with tf.variable_scope("RNN"):
             for time_step in range(self.num_steps):
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
+                # WARN! hidden states need to build by hand
                 (cell_output, state) = cell(inputs[:, time_step, :], state)
                 outputs.append(cell_output)
         output = tf.reshape(tf.concat(outputs, 1), [-1, config.hidden_size])
@@ -244,6 +247,7 @@ class PTBModel(object):
             ops.update(lr=self._lr, new_lr=self._new_lr, lr_update=self._lr_update)
             if self._rnn_params:
                 ops.update(rnn_params=self._rnn_params)
+        # !!! add operator to tf collections
         for name, op in ops.items():
             tf.add_to_collection(name, op)
         self._initial_state_name = util.with_prefix(self._name, "initial")
@@ -254,6 +258,8 @@ class PTBModel(object):
     def import_ops(self):
         """Imports ops from collections."""
         if self._is_training:
+            # ??? what is mean the following
+            # --- Get ops from dones of self.export_ops
             self._train_op = tf.get_collection_ref("train_op")[0]
             self._lr = tf.get_collection_ref("lr")[0]
             self._new_lr = tf.get_collection_ref("new_lr")[0]
@@ -479,6 +485,7 @@ def main(_):
         soft_placement = False
         if FLAGS.num_gpus > 1:
             soft_placement = True
+            # !!! parallel GPU
             util.auto_parallel(metagraph, m)
 
     with tf.Graph().as_default():
