@@ -26,3 +26,9 @@
     3. 有关给定中心词wc生成背景词wo的损失是:
         - \text{log} \mathbb{P} (w_o \mid w_c) = -\text{log} \frac{1}{1+\text{exp}(-\mathbf{u}_o^\top \mathbf{v}_c)}  - \sum_{k=1, w_k \sim \mathbb{P}(w)}^K \text{log} \frac{1}{1+\text{exp}(\mathbf{u}_{i_k}^\top \mathbf{v}_c)}.
     ```
+
+- parallel model on GPUs
+    tutorials/rnn/ptb/ptb_word_lm.py: util.auto_parallel(metagraph, m)
+
+- tf.train.Supervisor Flow
+    `tensorflow-learning/session-flow1/README.md`
